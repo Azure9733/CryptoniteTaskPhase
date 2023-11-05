@@ -1,0 +1,160 @@
+Level 0 : I made the mistake of typing my OS username instead of the given SSH username while logging in and also forgot to mention the port number due to which I could not login. After 10 minutes of troubleshooting I realized my mistake and corrected it.
+bandit0
+
+Level 0 to 1:After logging in I used the ‘ls’ command to see the contents in the current directory (home).
+Then I used ‘cat readme’ to open the readme file, got the password and logged out.
+Password: NH2SXQwcBdpmTEzi3bvBHMM9H66vVXjL
+
+Level 1 to 2: After logging into bandit 1, I could not open the ‘-’ file using the cat command. After trying a few times, I had to look it up online. I learned that the terminal gets confused when the file name starts with - and it takes it as if it's an incomplete command.
+
+To avoid this we use cat ./-to open the file.
+Password: rRGizSaX8Mk1RTb1CNQoXTcYZWU6lgzi
+
+Level 2 to 3: Similar to the previous one except now there were spaces in the file name, literally! I went through the google search that was suggested as a reference source and found that spaces too are not supported in many OS including ubuntu and so one has to use “ “ to define the file name. So I used cat “spaces in this filename” and got the password.
+Password: aBZ0W5EmUfAf7kHTQeOwd8bauFJ2lAiG
+
+Level 3 to 4: In order to open the hidden file inhere, I used find inhere and got the directory of the hidden file. cat inhere/.hidden	 gave me the password.
+Password: 2EW7BBsr6aMMoJ2HjW067dm8EgX26xNe
+
+Level 4 to 5: Similar to the previous one, I used find inhere and got 10 files. Then I used the cat command while inputting all the 9 hidden file directories. Only cat inhere/-file07 was in readable form so that was the password.
+Password: lrIWWI6bB37kxfiCQZqUdOIYfr6eEeqR
+
+Level 5 to 6: There were 3 data points given, all of which gave me a pretty good idea of how I can try to find the file but I did not know the method of implementing that idea. I first did find inhere to see all the files in the home directory only to get overwhelmed later on when I tried to use cat on all of them at the same time.
+I also tried to use du to find the file of the size 1033 bytes but again failed.
+Then i looked up how to find files of a particular size and found this blog: https://www.ducea.com/2008/02/12/linux-tips-find-all-files-of-a-particular-size/
+From here I understood how to express what I wanted to do.
+find inhere -type f -size 1033c -not -exec ls {} \;
+It is asking to find inside the directory inhere, a file of size 1033 bytes that is not executable.
+With that i got inhere/maybehere07/.file2 and the password to level 6
+Password:P4L4vucdmLnm8I7Vl7jG1ApGSfjYKqJU
+
+Level 6 to 7: Here no files were visible when using the ls command. I used the man find command and then /user and /group to find which commands to use to find files which can be accessed/owned by certain users and groups.
+
+
+With this I was able to write the required command and get the file which has the password.
+
+Password:z7WtoNQU2XfjmMtWA8u5rN4vzqu4v99
+
+Level 7 to 8: I found the data.txt file after using the ls command. However using the cat data.txt command gave so many jumbled files through which it was impossible to find the file named millionth. So I used the sort command and got all the files sorted in alphabetical order only to realize the files still were so many that the terminal could not load beyond alphabetical order t.
+Then I used the grep command to find the file named millionth in the data.txt file.
+
+
+Level 8 to 9: In order to find the unique file in data.txt I used the following command after reading the piping blog given for reference as well as about the uniq command:-
+
+Level 9 to 10: This one was one of the easiest levels. From the condition provided, after using the strings command it was easy to locate the password in the data.txt file. 
+
+
+
+Level 10 to 11: After using the cat data.txt command I found the base 64 encoded file. Since there was no hyperlink for base64 I looked up online for blogs explaining the function of base64 command. https://www.sanfoundry.com/base64-command-usage-examples-linu/
+From here I learnt how to decode the base64 encoded file. 
+echo QWxhZGRpbjpvcGVuIHNlc2FtZQ== | base64 --decode
+With echo we are giving the input statement i.e. the encoded string and getting back a standard output, then we pipe the next command base 64 –decode just decodes the string.
+
+
+Level 11 to 12: After going through the Rot13 wikipedia page as well as understanding what the tr function is. I was able to find the password by using the command below.
+The way it's working is that the tr command instructs the terminal to change the positioning of the letter A to Z and a-z with N-Z then A till M and n to z then a till m.
+
+Level 12 to 13: To solve this I followed the provided instructions and ran the following commands
+
+
+Then I tried to use cat data.txt which gave me hex format result
+So i used xxd data.txt and got an even bigger answer
+After reading a bit more about the xxd command from man xxd I realised I had to use the revert option as well.
+
+I did not create a new file to save this result in order to see in which format it is.
+So i ran the following commands and checked the format
+
+
+Since it was a gzip file I used the man gzip command to find how to decompress it.
+I found the command i.e. gunzip.
+However it did not work because I did not properly read the manual. The file must be in proper extension to be able to decompress. Here i used the mv command and created a new file.
+Then I got the result in bzip2 format.
+
+This kept repeating in a loop.
+
+
+This kept going on and on
+
+
+
+
+Level 13 to 14: Logged in as bandit 13 and went through the SSH, RSA and DSA blog shared for reference. Used ls command and tried the cat command on the file.
+I used the local host and the given private key to log into another ssh server
+ssh bandit14@localhost -i sshkey.private -p 2220
+Here bandit14 is the username, local host is the host machine, -i is the identity tool which we are using to enter the server using the private RSA key.
+RSA key unlike password is much bigger and difficult to brute force. Just like a fingerprint it's another way of authentication and the private RSA key is the identification media.
+I got inside the ssh server and used cat /etc/bandit_pass/bandit14 to get the password.
+
+
+
+Level 14 to 15: logged in and went through the reference materials shared (some of them).
+I remembered from reading before about the nc command that it deals with ports and stuff so I looked at nc and other commands given again in the manual.
+I was finding trouble in trying to use the nc command as it kept giving me errors.
+I had to look it up online to see if there was a simpler explanation with examples
+https://www.computerhope.com/unix/nc.htm
+From here I used nc localhost 30000
+And then entered the current password to get the next level’s password.
+
+
+Level 15 to 16: I used nc localhost 30001 but i did not give the password. 
+I looked up the manual for s_client but felt like there was not enough information so I looked it up online
+https://www.openssl.org/docs/man1.0.2/man1/openssl-s_client.html
+Used openssl s_client -connect localhost -p 30001 but i didn't work.I realized i'm not supposed to use -p here
+Used openssl s_client -connect localhost 30001 and still got an error.
+Realized the : is missing.
+openssl s_client -connect localhost:30001
+Entered the current password and got the next password
+
+
+Level 16 to 17: logged in and went through the manual for nmap. Read the Port Specification and Scan order part to find the command to specify the port range.
+Used nmap localhost:31000-32000 and got nothing.
+Realized that I got the order wrong. Target is last.
+Got 5 ports
+Used openssl s_client -connect localhost: (port) for all the ports to see which one does echo the same password.
+Port 31790 gives the rsa private key.
+Then I created a temporary directory called level16dir.
+mkdir /tmp/level16dir and then changed to that directory using cd command.
+Then i used the cat >privatekey command to create a new file called privatekey and entered the private key into the file.
+I then tried to use the ssh bandit17@localhost -i privatekey -p 31790 but could get the answer.
+I hit a wall and after spending hours trying to figure it out I couldn't so I had to read a walkthrough blog to see what was to be done next.
+I used the chmod 600 command to change the access of the privatekey to only be accessible to me. And used the port 2220 instead.
+Then i got in and used the ls command only to find 2 password files.
+ 
+Error
+
+
+Then used cat /etc/bandit_pass/bandit17 to get the password.
+
+
+Level 17 to 18:Logged in and used the diff command to get the password.
+diff passwords.old passwords.new
+
+
+Level 18 to 19: Since i was getting logged out right after logging in, i use the commands i wish to run whilst logging in. 
+
+
+Level 19 to 20: logged in and used ls. Found bandit20-do in red. So i checked what it was using file bandit20-do. Used man setuid and went through the manual.
+Used the ‘ll’ command to get a list of all files and their working directory in the home directory.
+Bandit20-do was starred. The red signifies that the file has elevated permissions.
+I used ./ to run a command as another user.
+So tried ./bandit20-do it just told me the above.
+./bandit20-do cat /etc/bandit_pass i was told that its just a directory not a file so there must be one more detail.
+So I used  ./bandit20-do cat /etc/bandit_pass/bandit20 and got the password
+
+
+Level 20 to 21: logged in and did the same procedure as the previous level since suconnect was an elevated privilege file as well. Used ll and then ./ .
+But it did not work.
+There was a new command bash so i used man bash. I did not understand anything useful.
+Then I looked up the nc command online.
+https://www.geeksforgeeks.org/practical-uses-of-ncnetcat-command-in-linux/
+Had to use the listening mode of nc this time. 
+Logged in with another terminal tab.
+I Chose a random port number 79. But it could not connect.
+I was also not able to understand how to set it all up to receive the password. So i had to refer to a walkthrough blog.
+Then I opened 2 terminals and logged into bandit 20 in both.
+Terminal 1: nc -lp 1234 and then entering the password of the current level
+Terminal 2: ./suconnect 1234 which then reads the entered password into terminal1 and gives back the new password to terminal 1.
+
+
+
+
